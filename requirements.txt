@@ -1,0 +1,9 @@
+pandas
+numpy
+scikit-learn
+xgboost
+joblib
+pytest
+streamlit
+mysql-connector-python
+shap
