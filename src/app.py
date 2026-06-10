@@ -11,6 +11,9 @@ st.set_page_config(
 
 st.title("🏭 Predictive Maintenance Dashboard")
 
+# Model Accuracy
+st.metric("Model Accuracy", "98.75%")
+
 # Load trained model
 model = joblib.load("model.pkl")
 
@@ -57,11 +60,11 @@ if not data.empty:
 
         st.subheader("Latest Sensor Values")
 
-        st.metric("Air Temp", row["air_temp"])
-        st.metric("Process Temp", row["process_temp"])
+        st.metric("Air Temp (K)", row["air_temp"])
+        st.metric("Process Temp (K)", row["process_temp"])
         st.metric("RPM", row["rotational_speed"])
-        st.metric("Torque", row["torque"])
-        st.metric("Tool Wear", row["tool_wear"])
+        st.metric("Torque (Nm)", row["torque"])
+        st.metric("Tool Wear (min)", row["tool_wear"])
 
     with col2:
 
@@ -76,6 +79,17 @@ if not data.empty:
         prediction = model.predict(X)[0]
         probability = model.predict_proba(X)[0][1]
 
+        st.subheader("Failure Probability")
+
+        chart_data = pd.DataFrame({
+            "Metric": ["Failure Risk"],
+            "Probability (%)": [probability * 100]
+        })
+
+        st.bar_chart(
+            chart_data.set_index("Metric")
+        )
+
         st.subheader("Failure Prediction")
 
         if prediction == 1:
@@ -84,7 +98,7 @@ if not data.empty:
             )
         else:
             st.success(
-                f"✅ Normal Operation ({1-probability:.2%} confidence)"
+                f"✅ Normal Operation ({1 - probability:.2%} confidence)"
             )
 
 else:
