@@ -1,0 +1,57 @@
+Predictive Maintenance Pipeline
+
+Overview:
+This project predicts machine failures using machine learning and simulates a real-world predictive maintenance system.
+
+The pipeline trains an XGBoost model on the AI4I 2020 Predictive Maintenance Dataset, stores simulated sensor data in MySQL, displays predictions through a Streamlit dashboard, and automates testing using Jenkins CI/CD.
+
+ Features
+ Machine failure prediction using XGBoost
+ Real-time sensor simulation
+ MySQL database integration
+ Interactive Streamlit dashboard
+ Automated testing with PyTest
+ Jenkins CI/CD pipeline
+ GitHub integration
+
+ Tech Stack:
+ Python
+ Pandas
+ Scikit-Learn
+ XGBoost
+ MySQL
+ Streamlit
+ Jenkins
+ GitHub
+
+## Project Structure
+
+predictive-maintenance-pipeline:
+data/
+src/
+  train.py
+  sensor_simulator.py
+  db_setup.py
+  app.py
+
+ tests/
+   test_model.py
+
+Jenkinsfile
+requirements.txt
+model.pkl
+Workflow:
+
+1. Train model using AI4I dataset.
+2. Save trained model as model.pkl.
+3. Generate live sensor readings.
+4. Store sensor data in MySQL.
+5. Predict machine failures.
+6. Display results in Streamlit dashboard.
+7. Run automated tests through Jenkins.
+
+Results:
+The model successfully predicts machine health status and displays confidence scores through the dashboard.
+
+Author:
+Ikshitha Bethi
