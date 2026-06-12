@@ -60,18 +60,13 @@ st.sidebar.info(" Database: MySQL")
 st.sidebar.info(" CI/CD: Jenkins")
 if st.session_state.logged_in:
 
-    if st.sidebar.button("🚪 Logout"):
+    if st.sidebar.button("Logout"):
 
         st.session_state.logged_in = False
 
         st.rerun()
 
 # Header
-st.title("Predictive Maintenance System")
-
-st.caption(
-    "Real-time machine monitoring, failure prediction and maintenance analytics"
-)
 from datetime import datetime
 
 st.write(
@@ -79,17 +74,6 @@ st.write(
     datetime.now().strftime("%H:%M:%S")
 )
 
-# Top Metrics
-colA, colB, colC = st.columns(3)
-
-with colA:
-    st.metric("🎯 Model Accuracy", "98.75%")
-
-with colB:
-    st.metric("🤖 Model", "XGBoost")
-
-with colC:
-    st.metric("🗄️ Database", "MySQL")
 
 # Load trained model
 model = joblib.load("model.pkl")
@@ -176,8 +160,7 @@ def get_retraining_history():
         st.error(str(e))
 
         return pd.DataFrame()
-if st.button("🔄 Refresh Data"):
-    st.rerun()
+
 
 data = get_latest_data()
 history_df = get_history_data()
@@ -185,13 +168,13 @@ retrain_df = get_retraining_history()
 
 if page == "Retrain Model":
 
-    st.title("🔄 Model Retraining")
+    st.title("Model Retraining")
 
     st.write(
         "Retrain the predictive maintenance model using the latest dataset."
     )
 
-    if st.button("🚀 Retrain Model"):
+    if st.button(" Retrain Model"):
 
         import os
 
@@ -202,19 +185,19 @@ if page == "Retrain Model":
         if result == 0:
 
             st.success(
-                "✅ Model retrained successfully!"
+                " Model retrained successfully!"
             )
 
         else:
 
             st.error(
-                "❌ Retraining failed!"
+                "Retraining failed!"
             )
 
     st.stop()
 if page == "Login":
 
-    st.title("🔐 Login")
+    st.title("Login")
 
     with st.form("login_form"):
 
@@ -272,7 +255,7 @@ if page == "Login":
                 st.session_state.logged_in = True
 
                 st.success(
-                    "✅ Login Successful"
+                    "Login Successful"
                 )
 
                 st.rerun()
@@ -280,7 +263,7 @@ if page == "Login":
             else:
 
                 st.error(
-                    "❌ Invalid Email or Password"
+                    "Invalid Email or Password"
                 )
 
         except Exception as e:
@@ -290,7 +273,7 @@ if page == "Login":
     st.stop()
 if page == "Sign Up":
 
-    st.title("📝 Sign Up")
+    st.title(" Sign Up")
 
     username = st.text_input("Username")
     email = st.text_input("Email")
@@ -302,6 +285,25 @@ if page == "Sign Up":
     if st.button("Sign Up"):
 
         try:
+            if not username or not email or not password:
+
+                st.error(
+
+                    "All fields are required."
+
+                )
+
+                st.stop()
+
+            if len(password) < 6:
+
+                st.error(
+
+                    "Password must be at least 6 characters."
+
+                )
+
+            st.stop()
 
             mydb = mysql.connector.connect(
                 host="localhost",
@@ -320,11 +322,38 @@ if page == "Sign Up":
                 """,
                 (username,email,password)
             )
+            existing_user = cursor.fetchone()
+
+            if existing_user:
+
+                st.error(
+
+                    "Email already registered."
+
+                )
+
+            else:
+
+                cursor.execute(
+
+                    """
+
+                    INSERT INTO users
+
+                    (username,email,password)
+
+                    VALUES (%s,%s,%s)
+
+                    """,
+
+                    (username,email,password)
+
+                )
 
             mydb.commit()
 
             st.success(
-                "✅ Account created successfully! Redirecting to Login..."
+                "Account created successfully! Redirecting to Login..."
             )
 
             st.session_state.signup_success = True
@@ -340,7 +369,7 @@ if page == "Sign Up":
 
 if page == "Analytics":
 
-    st.title("📊 Analytics Dashboard")
+    st.title(" Analytics Dashboard")
 
     if not history_df.empty:
 
@@ -375,26 +404,26 @@ if page == "Analytics":
         )
         history_df = history_df.sort_values("id")
 
-        st.subheader("📈 Air Temperature Trend")
+        st.subheader(" Air Temperature Trend")
         st.line_chart(
             history_df.set_index("id")["air_temp"]
         )
 
-        st.subheader("⚙️ RPM Trend")
+        st.subheader(" RPM Trend")
         st.line_chart(
             history_df.set_index("id")["rotational_speed"]
         )
 
-        st.subheader("🔩 Torque Trend")
+        st.subheader(" Torque Trend")
         st.line_chart(
             history_df.set_index("id")["torque"]
         )
 
-        st.subheader("🛠 Tool Wear Trend")
+        st.subheader(" Tool Wear Trend")
         st.line_chart(
             history_df.set_index("id")["tool_wear"]
         )
-        st.subheader("🔄 Model Retraining History")
+        st.subheader(" Model Retraining History")
 
         if not retrain_df.empty:
 
@@ -415,78 +444,73 @@ if page == "Dashboard":
     colA, colB, colC = st.columns(3)
 
     with colA:
-        st.metric("🎯 Model Accuracy", "98.75%")
+        st.metric(" Model Accuracy", "98.75%")
 
     with colB:
-        st.metric("🤖 Model", "XGBoost")
+        st.metric(" Model", "XGBoost")
 
     with colC:
-        st.metric("🗄️ Database", "MySQL")
-
-    if st.button("🔄 Refresh Data"):
-        st.rerun()
-
+        st.metric(" Database", "MySQL")
     
+    if not data.empty:
 
-if not data.empty:
+        row = data.iloc[0]
 
-    row = data.iloc[0]
+        col1, col2 = st.columns(2)
 
-    col1, col2 = st.columns(2)
+        with col1:
 
-    with col1:
+            st.subheader("Latest Sensor Values")
 
-        st.subheader("Latest Sensor Values")
+            st.metric("Air Temp (K)", row["air_temp"])
+            st.metric("Process Temp (K)", row["process_temp"])
+            st.metric("RPM", row["rotational_speed"])
+            st.metric("Torque (Nm)", row["torque"])
+            st.metric("Tool Wear (min)", row["tool_wear"])
 
-        st.metric("Air Temp (K)", row["air_temp"])
-        st.metric("Process Temp (K)", row["process_temp"])
-        st.metric("RPM", row["rotational_speed"])
-        st.metric("Torque (Nm)", row["torque"])
-        st.metric("Tool Wear (min)", row["tool_wear"])
+        with col2:
 
-    with col2:
+            X = np.array([[
+                row["air_temp"],
+                row["process_temp"],
+                row["rotational_speed"],
+                row["torque"],
+                row["tool_wear"]
+            ]])
 
-        X = np.array([[
-            row["air_temp"],
-            row["process_temp"],
-            row["rotational_speed"],
-            row["torque"],
-            row["tool_wear"]
-        ]])
+            prediction = model.predict(X)[0]
+            probability = model.predict_proba(X)[0][1]
 
-        prediction = model.predict(X)[0]
-        probability = model.predict_proba(X)[0][1]
+            st.subheader("⚠️ Failure Risk Score")
 
-        st.subheader("⚠️ Failure Risk Score")
+            risk_percent = int(probability * 100)
 
-        risk_percent = int(probability * 100)
+            st.progress(risk_percent)
 
-        st.progress(risk_percent)
-
-        st.metric(
-            "Failure Risk",
-            f"{risk_percent}%"
-        )
-
-        if risk_percent < 30:
-            st.success("🟢 Low Risk")
-
-        elif risk_percent < 70:
-            st.warning("🟡 Medium Risk")
-
-        else:
-            st.error("🔴 High Risk")
-
-        st.subheader("Failure Prediction")
-
-        if prediction == 1:
-            st.error(
-                f"🚨 High Failure Risk ({probability:.2%})"
+            st.metric(
+                "Failure Risk",
+                f"{risk_percent}%"
             )
-        else:
-            st.success(
-                f"✅ Normal Operation ({1 - probability:.2%} confidence)"
-            )
+
+            if risk_percent < 30:
+                st.success(" Low Risk")
+
+            elif risk_percent < 70:
+                st.warning(" Medium Risk")
+
+            else:
+                st.error(" High Risk")
+
+            st.subheader("Failure Prediction")
+
+            if prediction == 1:
+                st.error(
+                    f" High Failure Risk ({probability:.2%})"
+                )
+            else:
+                st.success(
+                    f"Normal Operation ({1 - probability:.2%} confidence)"
+                )
 
     # Historical Trend Chart
     # Historical Trend Charts
