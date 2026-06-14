@@ -14,5 +14,11 @@ pipeline {
                 sh 'python3 -m pytest tests/test_model.py'
             }
         }
+
+        stage('Retrain Model') {
+            steps {
+                sh 'python3 src/retrain.py'
+            }
+        }
     }
 }
